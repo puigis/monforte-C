@@ -17,8 +17,8 @@ S = requests.Session()
 S.headers["User-Agent"] = "MonforteC-app/1.0 (seguiment equip; 2 consultes/setmana)"
 
 def norm(t):
-    t = unicodedata.normalize("NFKD", t or "").encode("ascii", "ignore").decode()
-    t = t.replace("“", '"').replace("”", '"').replace("''", '"')
+    t = (t or "").replace("“", '"').replace("”", '"').replace("«", '"').replace("»", '"').replace("''", '"')
+    t = unicodedata.normalize("NFKD", t).encode("ascii", "ignore").decode()
     return re.sub(r"\s+", " ", t).strip().upper()
 
 def get(path, debug_name=None):
@@ -59,6 +59,9 @@ def find_date(texts):
 def team_cells(cells):
     out = []
     for c in cells:
+        if " - " in c and not SCORE.match(c):
+            out.extend(x.strip() for x in c.split(" - ", 1))
+            continue
         n = norm(c)
         if not n or SCORE.match(n) or DATE.search(n) or n.isdigit() or n in STATUS:
             continue
@@ -99,7 +102,14 @@ def partides(link, venue, jornada):
     soup = get(path, f"partides-{jornada}")
     res = []
     for cells, _ in rows(soup):
-        names = [c for c in cells if "," in c and re.search(r"[A-Za-zÀ-ÿ]{2}", c) and not SCORE.match(c)]
+        names = []
+        for c in cells:
+            if SCORE.match(c) or not re.search(r"[A-Za-zÀ-ÿ]{2}", c):
+                continue
+            if " - " in c and c.count(",") >= 2:
+                names.extend(x.strip() for x in c.split(" - ", 1))
+            elif "," in c:
+                names.append(c)
         scores = [SCORE.match(c) for c in cells if SCORE.match(c)]
         ints = [int(c) for c in cells if c.strip().isdigit()]
         if len(names) < 2 or len(scores) < 2 or not ints:
