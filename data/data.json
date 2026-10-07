@@ -1,75 +1,8 @@
 {
  "equip": "C.B. Monforte \"C\"",
  "competicio": "Lliga Catalana Tres Bandes · 1a Divisió · Grup A",
- "updated": "2026-10-07T06:36+00:00",
- "players": [
-  {
-   "id": "castro-tellez-henry",
-   "name": "Castro Téllez, Henry",
-   "initial": "0.614"
-  },
-  {
-   "id": "hernandez-giraldo-fabian-alberto",
-   "name": "Hernandez Giraldo, Fabian Alberto",
-   "initial": ""
-  },
-  {
-   "id": "lozano-villegas-mauricio",
-   "name": "Lozano Villegas, Mauricio",
-   "initial": "0.588"
-  },
-  {
-   "id": "mejia-arias-duvan",
-   "name": "Mejia Arias, Duvan",
-   "initial": ""
-  }
- ],
- "matches": [
-  {
-   "id": "j01",
-   "jornada": "1",
-   "date": "2026-09-26",
-   "rival": "C.B. ALBA",
-   "venue": "L",
-   "results": [
-    {
-     "pid": "castro-tellez-henry",
-     "car": 35,
-     "ent": 49,
-     "sm": 5,
-     "res": "G"
-    },
-    {
-     "pid": "lozano-villegas-mauricio",
-     "car": 31,
-     "ent": 50,
-     "sm": 4,
-     "res": "E"
-    },
-    {
-     "pid": "hernandez-giraldo-fabian-alberto",
-     "car": 35,
-     "ent": 48,
-     "sm": 5,
-     "res": "G"
-    },
-    {
-     "pid": "mejia-arias-duvan",
-     "car": 26,
-     "ent": 50,
-     "sm": 3,
-     "res": "G"
-    }
-   ]
-  }
- ],
- "calendar": [
-  {
-   "jornada": "1",
-   "date": "2026-09-26",
-   "rival": "C.B. ALBA",
-   "venue": "L",
-   "played": true
-  }
- ]
+ "updated": "2026-10-07T06:37+00:00",
+ "players": [],
+ "matches": [],
+ "calendar": []
 }
