@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="ca">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#1f6b3a">
+<title>Monforte C</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon.svg">
+<link rel="apple-touch-icon" href="icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<style>
+:root{--bg:#f4f1ea;--card:#fff;--ink:#1c1c1a;--muted:#6b6a64;--felt:#1f6b3a;--felt2:#174f2b;--up:#15803d;--down:#b91c1c;--line:#e3dfd4;--chip:#eef3ee}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#121412;--card:#1c1f1c;--ink:#ecebe6;--muted:#9a998f;--line:#2e322e;--up:#4ade80;--down:#f87171;--chip:#243024}}
+:root[data-theme="dark"]{--bg:#121412;--card:#1c1f1c;--ink:#ecebe6;--muted:#9a998f;--line:#2e322e;--up:#4ade80;--down:#f87171;--chip:#243024}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--ink);-webkit-text-size-adjust:100%}
+header{background:linear-gradient(160deg,var(--felt),var(--felt2));color:#fff;padding:14px 16px 0;position:sticky;top:0;z-index:5}
+header h1{margin:0;font-size:20px;letter-spacing:.2px}
+header p{margin:2px 0 8px;opacity:.8;font-size:13px}
+nav{display:flex;max-width:760px;margin:0 auto}
+nav button{flex:1;background:none;border:0;color:#fff;opacity:.7;padding:10px 4px;font-size:15px;border-bottom:3px solid transparent;cursor:pointer}
+nav button.on{opacity:1;border-color:#fff;font-weight:600}
+.hwrap{max-width:760px;margin:0 auto}
+main{padding:16px;max-width:760px;margin:0 auto}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:14px}
+h2{font-size:17px;margin:0 0 10px}
+h3{font-size:15px;margin:0 0 8px}
+.muted{color:var(--muted);font-size:13px}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.kpi{background:var(--chip);border-radius:10px;padding:10px;text-align:center}
+.kpi b{display:block;font-size:22px;font-variant-numeric:tabular-nums}
+.kpi span{font-size:12px;color:var(--muted)}
+table{width:100%;border-collapse:collapse;font-size:14px;font-variant-numeric:tabular-nums}
+th,td{padding:8px 4px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}
+th:first-child,td:first-child{text-align:left;white-space:normal}
+th{font-size:12px;color:var(--muted);font-weight:600}
+tr.click{cursor:pointer}
+.scroll{overflow-x:auto}
+.up{color:var(--up);font-weight:600}.down{color:var(--down);font-weight:600}.eq{color:var(--muted)}
+.btn{background:var(--felt);color:#fff;border:0;border-radius:9px;padding:10px 14px;font-size:15px;cursor:pointer}
+.btn.sec{background:var(--chip);color:var(--ink)}
+.btn.del{background:none;color:var(--down);padding:6px 8px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+input,select{font:inherit;padding:9px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);min-width:0}
+label{font-size:13px;color:var(--muted);display:block;margin-bottom:4px}
+.field{flex:1;min-width:120px}
+.badge{display:inline-block;font-size:11px;font-weight:700;padding:2px 7px;border-radius:20px;margin-right:6px}
+.L{background:#dcfce7;color:#166534}.F{background:#e0e7ff;color:#3730a3}
+@media (prefers-color-scheme:dark){.L{background:#14532d;color:#bbf7d0}.F{background:#312e81;color:#c7d2fe}}
+.match{border-bottom:1px solid var(--line);padding:10px 0}
+.match:last-child{border:0}
+.pr{display:grid;grid-template-columns:1fr 64px 64px 64px;gap:6px;align-items:center;margin-bottom:6px}
+.pr input,.pr select{width:100%;padding:7px}
+.pr .nm{display:flex;align-items:center;gap:6px;font-size:14px}
+.back{background:none;border:0;color:var(--felt);font-size:15px;padding:0 0 10px;cursor:pointer}
+@media (prefers-color-scheme:dark){.back{color:#86efac}}
+svg text{fill:var(--muted);font-size:10px}
+</style>
+</head>
+<body>
+<header><div class="hwrap"><h1>🎱 Monforte C</h1><p>Billar a 3 bandes · seguiment de la temporada</p></div>
+<nav id="nav" style="overflow-x:auto"><button data-t="equip">Equip</button><button data-t="jugadors">Jugadors</button><button data-t="partits">Partits</button><button data-t="calendari">Calendari</button></nav></header>
+<main id="app"><div class="card"><p class="muted">Carregant dades…</p></div></main>
+<script>
+let db={players:[],matches:[]};
+let view={tab:'equip',player:null,editing:null};
+let canWrite=false,ready=false,loadErr=false,dirty=false;
+const r3=x=>Math.round(x*1000)/1000;
+const f3=x=>(x==null||isNaN(x))?'—':r3(x).toFixed(3);
+const uid=()=>Math.random().toString(36).slice(2,10);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const byDate=(a,b)=>(a.date||'').localeCompare(b.date||'');
+const fdate=d=>d?d.split('-').reverse().join('/'):'';
+const P=id=>db.players.find(p=>p.id===id);
+
+function stats(pid){
+  const ms=db.matches.slice().sort(byDate).filter(m=>m.results.some(r=>r.pid===pid));
+  let car=0,ent=0,loc=0,fora=0,g=0,e=0,p=0;const evo=[];
+  ms.forEach(m=>{const r=m.results.find(r=>r.pid===pid);car+=+r.car||0;ent+=+r.ent||0;
+    m.venue==='L'?loc++:fora++; if(r.res==='G')g++;else if(r.res==='E')e++;else if(r.res==='P')p++;
+    evo.push({m,r,avg:+r.ent?r.car/r.ent:null,cum:ent?car/ent:null});});
+  return{pj:ms.length,loc,fora,car,ent,avg:ent?car/ent:null,g,e,p,evo};
+}
+function trend(avg,ini){
+  if(avg==null||ini==null||ini==='')return'<span class="eq">—</span>';
+  const d=r3(r3(avg)-r3(+ini));
+  if(d>0)return`<span class="up">▲ +${d.toFixed(3)}</span>`;
+  if(d<0)return`<span class="down">▼ ${d.toFixed(3)}</span>`;
+  return'<span class="eq">= 0.000</span>';
+}
+
+function busy(){const a=document.activeElement;return view.editing||(a&&/INPUT|SELECT/.test(a.tagName)&&a.id!=='')}
+function refresh(){if(busy()){dirty=true;return}render()}
+function render(){dirty=false;
+  if(loadErr){document.getElementById('app').innerHTML=`<div class="card"><h2>No es poden carregar les dades</h2><p class="muted">Torna-ho a provar d'aquí a una estona.</p></div>`;return}
+  if(!ready)return;
+  document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('on',b.dataset.t===view.tab));
+  const a=document.getElementById('app');
+  if(view.editing)a.innerHTML=matchForm();
+  else if(view.tab==='equip')a.innerHTML=equip();
+  else if(view.tab==='jugadors')a.innerHTML=view.player?playerDetail(view.player):jugadors();
+  else if(view.tab==='partits')a.innerHTML=partits();
+  else if(view.tab==='calendari')a.innerHTML=calendari();
+  window.scrollTo(0,0);
+}
+
+function equip(){
+  const ms=db.matches;const loc=ms.filter(m=>m.venue==='L').length;
+  let car=0,ent=0;ms.forEach(m=>m.results.forEach(r=>{car+=+r.car||0;ent+=+r.ent||0}));
+  const rows=db.players.map(p=>({p,s:stats(p.id)})).sort((a,b)=>(b.s.avg??-1)-(a.s.avg??-1));
+  if(!db.players.length)return`<div class="card"><h2>Encara no hi ha dades</h2><p class="muted">Les dades de la temporada apareixeran aquí quan s'hi carreguin.</p>${canWrite?`<button class="btn" onclick="go('jugadors')">Afegir jugadors</button>`:''}</div>`;
+  return`<div class="card"><h2>Temporada</h2><div class="kpis">
+   <div class="kpi"><b>${ms.length}</b><span>Partits</span></div>
+   <div class="kpi"><b>${loc}</b><span>A casa</span></div>
+   <div class="kpi"><b>${ms.length-loc}</b><span>A fora</span></div></div>
+   <p class="muted" style="margin:10px 0 0">${esc(db.competicio||'')}</p><p class="muted" style="margin:4px 0 0">Promig de l'equip a la lliga: <b>${f3(ent?car/ent:null)}</b> (${car} car. / ${ent} ent.)</p></div>
+  <div class="card"><h2>Jugadors</h2><div class="scroll"><table>
+   <tr><th>Jugador</th><th>PJ</th><th>Casa</th><th>Fora</th><th>Inicial</th><th>Lliga</th><th>Evolució</th></tr>
+   ${rows.map(({p,s})=>`<tr class="click" onclick="openP('${p.id}')"><td>${esc(p.name)}</td><td>${s.pj}</td><td>${s.loc}</td><td>${s.fora}</td><td>${f3(p.initial===''?null:+p.initial)}</td><td><b>${f3(s.avg)}</b></td><td>${trend(s.avg,p.initial)}</td></tr>`).join('')}
+  </table></div><p class="muted">Toca un jugador per veure'n el detall.</p></div>
+  <p class="muted">Dades de la Federació Catalana de Billar. Actualitzat: ${db.updated?new Date(db.updated).toLocaleString('ca-ES',{dateStyle:'short',timeStyle:'short'}):'—'}</p>`;
+}
+
+function jugadors(){
+  return`${canWrite?`<div class="card"><h2>Afegir jugador</h2><div class="row">
+   <div class="field"><label>Nom</label><input id="pn" placeholder="Nom i cognom"></div>
+   <div class="field" style="max-width:130px"><label>Promig inicial</label><input id="pi" inputmode="decimal" placeholder="0.000"></div>
+   <button class="btn" style="align-self:flex-end" onclick="addP()">Afegir</button></div></div>`:''}
+  <div class="card"><h2>Plantilla (${db.players.length})</h2>
+   ${db.players.length?`<table><tr><th>Jugador</th><th>Inicial</th><th>Lliga</th><th></th></tr>
+   ${db.players.map(p=>{const s=stats(p.id);return`<tr class="click"><td onclick="openP('${p.id}')">${esc(p.name)}</td><td onclick="openP('${p.id}')">${f3(p.initial===''?null:+p.initial)}</td><td onclick="openP('${p.id}')">${f3(s.avg)}</td><td>${canWrite?`<button class="btn del" onclick="delP('${p.id}')">✕</button>`:''}</td></tr>`}).join('')}</table>`:'<p class="muted">Encara no hi ha jugadors.</p>'}</div>`;
+}
+
+function playerDetail(id){
+  const p=P(id);if(!p){view.player=null;return jugadors()}
+  const s=stats(id);
+  return`<button class="back" onclick="view.player=null;render()">‹ Tots els jugadors</button>
+  <div class="card"><h2>${esc(p.name)}</h2>
+   <div class="kpis"><div class="kpi"><b>${f3(p.initial===''?null:+p.initial)}</b><span>Inicial</span></div>
+   <div class="kpi"><b>${f3(s.avg)}</b><span>Lliga</span></div>
+   <div class="kpi"><b style="font-size:17px;line-height:26px">${trend(s.avg,p.initial)}</b><span>Diferència</span></div></div>
+   <div class="kpis" style="margin-top:8px"><div class="kpi"><b>${s.pj}</b><span>Partits</span></div>
+   <div class="kpi"><b>${s.loc}</b><span>A casa</span></div><div class="kpi"><b>${s.fora}</b><span>A fora</span></div></div>
+   <p class="muted" style="margin:10px 0 0">${s.car} caramboles en ${s.ent} entrades · ${s.g} G · ${s.e} E · ${s.p} P</p>
+   ${canWrite?`<div class="row" style="margin-top:10px"><div class="field"><label>Canviar promig inicial</label><input id="ei" inputmode="decimal" value="${esc(p.initial)}"></div><button class="btn sec" style="align-self:flex-end" onclick="setIni('${id}')">Desar</button></div>`:''}</div>
+  <div class="card"><h3>Evolució del promig</h3>${chart(s.evo,p.initial===''?null:+p.initial)}
+   <p class="muted">Línia verda: promig acumulat. Punts: promig de cada partit. Línia discontínua: promig inicial.</p></div>
+  <div class="card"><h3>Partits</h3><div class="scroll"><table><tr><th>Partit</th><th>Car</th><th>Ent</th><th>Promig</th><th>Acum.</th></tr>
+   ${s.evo.slice().reverse().map(x=>`<tr><td><span class="badge ${x.m.venue}">${x.m.venue==='L'?'CASA':'FORA'}</span>${esc(x.m.rival)}<br><span class="muted">${fdate(x.m.date)}${x.r.res?' · '+x.r.res:''}</span></td><td>${x.r.car}</td><td>${x.r.ent}</td><td>${f3(x.avg)}</td><td><b>${f3(x.cum)}</b></td></tr>`).join('')||'<tr><td colspan="5" class="muted">Cap partit jugat.</td></tr>'}
+  </table></div></div>`;
+}
+
+function chart(evo,ini){
+  const pts=evo.filter(x=>x.cum!=null);
+  if(!pts.length)return'<p class="muted">Encara no hi ha partits.</p>';
+  const W=340,H=170,L=34,R=10,T=10,B=22;
+  const vals=pts.map(x=>x.cum).concat(pts.map(x=>x.avg).filter(v=>v!=null));if(ini!=null)vals.push(ini);
+  let lo=Math.min(...vals),hi=Math.max(...vals);if(hi-lo<0.05){hi+=0.03;lo-=0.03}
+  const pd=(hi-lo)*0.08;lo=Math.max(0,lo-pd);hi+=pd;
+  const x=i=>pts.length===1?(L+W-R)/2:L+i*(W-L-R)/(pts.length-1);
+  const y=v=>T+(H-T-B)*(1-(v-lo)/(hi-lo));
+  let g='';
+  for(let k=0;k<=3;k++){const v=lo+(hi-lo)*k/3;g+=`<line x1="${L}" x2="${W-R}" y1="${y(v)}" y2="${y(v)}" stroke="var(--line)"/><text x="${L-4}" y="${y(v)+3}" text-anchor="end">${v.toFixed(3)}</text>`}
+  if(ini!=null)g+=`<line x1="${L}" x2="${W-R}" y1="${y(ini)}" y2="${y(ini)}" stroke="var(--muted)" stroke-dasharray="4 3"/>`;
+  g+=pts.map((p,i)=>p.avg!=null?`<circle cx="${x(i)}" cy="${y(p.avg)}" r="3" fill="var(--muted)" opacity=".5"/>`:'').join('');
+  g+=`<polyline fill="none" stroke="var(--up)" stroke-width="2.5" points="${pts.map((p,i)=>x(i)+','+y(p.cum)).join(' ')}"/>`;
+  g+=pts.map((p,i)=>`<circle cx="${x(i)}" cy="${y(p.cum)}" r="3.5" fill="var(--up)"/>`).join('');
+  g+=`<text x="${L}" y="${H-6}">P1</text><text x="${W-R}" y="${H-6}" text-anchor="end">P${pts.length}</text>`;
+  return`<svg viewBox="0 0 ${W} ${H}" width="100%">${g}</svg>`;
+}
+
+function partits(){
+  const ms=db.matches.slice().sort(byDate).reverse();
+  return`<div class="row" style="margin-bottom:14px">${canWrite?`<button class="btn" onclick="editM()">+ Nou partit</button>`:''}
+   <span class="muted">${ms.length} partits · ${ms.filter(m=>m.venue==='L').length} a casa · ${ms.filter(m=>m.venue==='F').length} a fora</span></div>
+  <div class="card">${ms.length?ms.map(m=>`<div class="match"><div class="row" style="justify-content:space-between">
+   <div><span class="badge ${m.venue}">${m.venue==='L'?'CASA':'FORA'}</span><b>${esc(m.rival)||'Rival'}</b><br><span class="muted">${fdate(m.date)}${m.jornada?' · Jornada '+esc(m.jornada):''}</span></div>
+   <div>${canWrite?`<button class="btn sec" style="padding:6px 10px" onclick="editM('${m.id}')">Editar</button>`:''}</div></div>
+   <div class="muted" style="margin-top:6px">${m.results.map(r=>`${esc(P(r.pid)?.name||'?')}: ${r.car}/${r.ent} = ${f3(+r.ent?r.car/r.ent:null)}${r.res?' ('+r.res+')':''}`).join('<br>')}</div></div>`).join(''):'<p class="muted">Encara no hi ha partits.</p>'}</div>`;
+}
+
+function matchForm(){
+  const m=view.editing;
+  if(!db.players.length)return`<div class="card"><p>Primer cal afegir jugadors.</p><button class="btn" onclick="view.editing=null;go('jugadors')">Anar a Jugadors</button></div>`;
+  return`<button class="back" onclick="view.editing=null;render()">‹ Cancel·lar</button>
+  <div class="card"><h2>${m._new?'Nou partit':'Editar partit'}</h2>
+   <div class="row"><div class="field"><label>Data</label><input type="date" id="md" value="${esc(m.date)}"></div>
+   <div class="field"><label>Jornada</label><input id="mj" inputmode="numeric" value="${esc(m.jornada)}"></div></div>
+   <div class="row" style="margin-top:8px"><div class="field"><label>Rival</label><input id="mr" value="${esc(m.rival)}" placeholder="Club rival"></div>
+   <div class="field" style="max-width:140px"><label>On</label><select id="mv"><option value="L"${m.venue==='L'?' selected':''}>A casa</option><option value="F"${m.venue==='F'?' selected':''}>A fora</option></select></div></div></div>
+  <div class="card"><h3>Resultats</h3><p class="muted" style="margin-top:0">Marca qui ha jugat i posa caramboles, entrades i resultat.</p>
+   <div class="pr muted" style="font-size:12px"><span>Jugador</span><span>Car</span><span>Ent</span><span>Res</span></div>
+   ${db.players.map(p=>{const r=m.results.find(r=>r.pid===p.id);return`<div class="pr"><label class="nm" style="margin:0;color:var(--ink)"><input type="checkbox" id="c_${p.id}"${r?' checked':''}>${esc(p.name)}</label>
+    <input id="a_${p.id}" inputmode="numeric" value="${r?r.car:''}"><input id="e_${p.id}" inputmode="numeric" value="${r?r.ent:''}">
+    <select id="r_${p.id}"><option value=""></option>${['G','E','P'].map(v=>`<option${r&&r.res===v?' selected':''}>${v}</option>`).join('')}</select></div>`}).join('')}
+  </div>
+  <div class="row"><button class="btn" onclick="saveM()">Desar partit</button>${m._new?'':`<button class="btn del" onclick="delM('${m.id}')">Eliminar partit</button>`}</div>`;
+}
+
+function go(t){view.tab=t;view.player=null;view.editing=null;render()}
+function openP(id){view.tab='jugadors';view.player=id;render()}
+function num(s){s=String(s).trim().replace(',','.');return s===''?'':(isNaN(+s)?null:s)}
+function calendari(){
+  const c=(db.calendar||[]).slice().sort(byDate);
+  if(!c.length)return'<div class="card"><p class="muted">Calendari no disponible.</p></div>';
+  return`<div class="card"><h2>Calendari</h2>${c.map(x=>{const m=db.matches.find(m=>m.jornada===x.jornada);
+   let tot='';if(m){let g=0,p=0;m.results.forEach(r=>{if(r.res==='G')g++;else if(r.res==='P')p++});tot=` · ${g}G ${m.results.length-g-p}E ${p}P`}
+   return`<div class="match"><span class="badge ${x.venue}">${x.venue==='L'?'CASA':'FORA'}</span><b>${esc(x.rival)}</b><br><span class="muted">Jornada ${esc(x.jornada)} · ${fdate(x.date)}${x.played?' · Jugat'+tot:''}</span></div>`}).join('')}</div>`;
+}
+document.addEventListener('focusout',()=>setTimeout(()=>{if(dirty&&!busy())render()},50));
+fetch('data/data.json?'+Date.now()).then(r=>{if(!r.ok)throw 0;return r.json()}).then(d=>{
+  db={...d,players:d.players||[],matches:(d.matches||[]).map(m=>({...m,results:m.results||[]}))};ready=true;render()
+}).catch(()=>{loadErr=true;render()});
+document.getElementById('nav').addEventListener('click',e=>{const t=e.target.dataset.t;if(t)go(t)});
+</script>
+</body>
+</html>

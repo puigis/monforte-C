@@ -1,0 +1,24 @@
+name: Actualitza resultats
+on:
+  schedule:
+    - cron: "17 8 * * 0,1,3"   # diumenge, dilluns i dimecres ~10:17 (hora de Madrid a l'estiu)
+  workflow_dispatch:
+  push:
+    paths: ["scripts/**", "data/inicials.json", ".github/workflows/**"]
+permissions:
+  contents: write
+jobs:
+  actualitza:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install requests beautifulsoup4
+      - run: python scripts/actualitza.py
+      - name: Desa els canvis
+        run: |
+          git config user.name "monforte-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add data
+          git diff --cached --quiet || (git commit -m "Actualitza resultats" && git push)
