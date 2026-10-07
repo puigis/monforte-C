@@ -1,8 +1,166 @@
 {
  "equip": "C.B. Monforte \"C\"",
  "competicio": "Lliga Catalana Tres Bandes · 1a Divisió · Grup A",
- "updated": "2026-10-07T06:37+00:00",
- "players": [],
- "matches": [],
- "calendar": []
+ "updated": "2026-10-07T06:38+00:00",
+ "players": [
+  {
+   "id": "castro-tellez-henry",
+   "name": "Castro Téllez, Henry",
+   "initial": "0.614"
+  },
+  {
+   "id": "hernandez-giraldo-fabian-alberto",
+   "name": "Hernandez Giraldo, Fabian Alberto",
+   "initial": "0.565"
+  },
+  {
+   "id": "lozano-villegas-mauricio",
+   "name": "Lozano Villegas, Mauricio",
+   "initial": "0.588"
+  },
+  {
+   "id": "mejia-arias-duvan",
+   "name": "Mejia Arias, Duvan",
+   "initial": "0.525"
+  }
+ ],
+ "matches": [
+  {
+   "id": "j01",
+   "jornada": "1",
+   "date": "2026-09-26",
+   "rival": "C.B. ALBA",
+   "venue": "L",
+   "results": [
+    {
+     "pid": "castro-tellez-henry",
+     "car": 35,
+     "ent": 49,
+     "sm": 5,
+     "res": "G"
+    },
+    {
+     "pid": "lozano-villegas-mauricio",
+     "car": 31,
+     "ent": 50,
+     "sm": 4,
+     "res": "E"
+    },
+    {
+     "pid": "hernandez-giraldo-fabian-alberto",
+     "car": 35,
+     "ent": 48,
+     "sm": 5,
+     "res": "G"
+    },
+    {
+     "pid": "mejia-arias-duvan",
+     "car": 26,
+     "ent": 50,
+     "sm": 3,
+     "res": "G"
+    }
+   ]
+  }
+ ],
+ "calendar": [
+  {
+   "jornada": "1",
+   "date": "2026-09-26",
+   "rival": "C.B. ALBA",
+   "venue": "L",
+   "played": true
+  },
+  {
+   "jornada": "2",
+   "date": "2026-10-10",
+   "rival": "C.B. 2000 CERDANYOLA “A”",
+   "venue": "F",
+   "played": false
+  },
+  {
+   "jornada": "3",
+   "date": "2026-10-17",
+   "rival": "SBPE. CENTELLES  \"A\"",
+   "venue": "L",
+   "played": false
+  },
+  {
+   "jornada": "4",
+   "date": "2026-11-07",
+   "rival": "C.B. MONT-ROIG \"B\"",
+   "venue": "F",
+   "played": false
+  },
+  {
+   "jornada": "5",
+   "date": "2026-11-21",
+   "rival": "C.B. PRAT \"A\"",
+   "venue": "L",
+   "played": false
+  },
+  {
+   "jornada": "6",
+   "date": "2026-12-19",
+   "rival": "S.B. LA UNIÓ CORAL \"A\"",
+   "venue": "L",
+   "played": false
+  },
+  {
+   "jornada": "7",
+   "date": "2027-01-02",
+   "rival": "C.B. SANTS \"B\"",
+   "venue": "F",
+   "played": false
+  },
+  {
+   "jornada": "8",
+   "date": "2027-01-09",
+   "rival": "C.B. ALBA",
+   "venue": "F",
+   "played": false
+  },
+  {
+   "jornada": "9",
+   "date": "2027-01-30",
+   "rival": "C.B. 2000 CERDANYOLA “A”",
+   "venue": "L",
+   "played": false
+  },
+  {
+   "jornada": "10",
+   "date": "2027-02-20",
+   "rival": "SBPE. CENTELLES  \"A\"",
+   "venue": "F",
+   "played": false
+  },
+  {
+   "jornada": "11",
+   "date": "2027-02-27",
+   "rival": "C.B. MONT-ROIG \"B\"",
+   "venue": "L",
+   "played": false
+  },
+  {
+   "jornada": "12",
+   "date": "2027-03-13",
+   "rival": "C.B. PRAT \"A\"",
+   "venue": "F",
+   "played": false
+  },
+  {
+   "jornada": "13",
+   "date": "2027-03-20",
+   "rival": "S.B. LA UNIÓ CORAL \"A\"",
+   "venue": "F",
+   "played": false
+  },
+  {
+   "jornada": "14",
+   "date": "2027-04-03",
+   "rival": "C.B. SANTS \"B\"",
+   "venue": "L",
+   "played": false
+  }
+ ]
 }
