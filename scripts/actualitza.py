@@ -116,11 +116,9 @@ def partides(link, venue, jornada):
             continue
         me = 0 if venue == "L" else 1
         sm, car = int(scores[me].group(1)), int(scores[me].group(2))
-        pts = (int(scores[-1].group(1)), int(scores[-1].group(2))) if len(scores) >= 3 else None
-        r = ""
-        if pts:
-            mine, theirs = (pts[0], pts[1]) if venue == "L" else (pts[1], pts[0])
-            r = "G" if mine > theirs else "P" if mine < theirs else "E"
+        rival_car = int(scores[1 - me].group(2))
+        # El resultat es calcula per caramboles: els punts de l'acta a vegades estan mal entrats.
+        r = "G" if car > rival_car else "P" if car < rival_car else "E"
         res.append({"name": names[me].strip(), "car": car, "ent": ints[0], "sm": sm, "res": r})
     return res
 
