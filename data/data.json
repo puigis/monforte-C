@@ -1,7 +1,7 @@
 {
  "equip": "C.B. Monforte \"C\"",
  "competicio": "Lliga Catalana Tres Bandes · 1a Divisió · Grup A",
- "updated": "2026-10-21T08:54+00:00",
+ "updated": "2026-10-25T08:49+00:00",
  "players": [
   {
    "id": "castro-tellez-henry",
@@ -32,6 +32,11 @@
    "id": "puig-latre-isaac",
    "name": "Puig Latre, Isaac",
    "initial": "0.483"
+  },
+  {
+   "id": "segura-mondria-francesc-xavier",
+   "name": "Segura Mondriá, Francesc Xavier",
+   "initial": "0.478"
   }
  ],
  "matches": [
@@ -108,6 +113,43 @@
      "res": "G"
     }
    ]
+  },
+  {
+   "id": "j03",
+   "jornada": "3",
+   "date": "2026-10-17",
+   "rival": "SBPE. CENTELLES  \"A\"",
+   "venue": "L",
+   "results": [
+    {
+     "pid": "castro-tellez-henry",
+     "car": 35,
+     "ent": 40,
+     "sm": 6,
+     "res": "G"
+    },
+    {
+     "pid": "mejia-arias-duvan",
+     "car": 26,
+     "ent": 50,
+     "sm": 4,
+     "res": "G"
+    },
+    {
+     "pid": "chuecos-enriquez-luis",
+     "car": 35,
+     "ent": 40,
+     "sm": 6,
+     "res": "G"
+    },
+    {
+     "pid": "segura-mondria-francesc-xavier",
+     "car": 18,
+     "ent": 50,
+     "sm": 3,
+     "res": "G"
+    }
+   ]
   }
  ],
  "calendar": [
@@ -130,7 +172,7 @@
    "date": "2026-10-17",
    "rival": "SBPE. CENTELLES  \"A\"",
    "venue": "L",
-   "played": false
+   "played": true
   },
   {
    "jornada": "4",
