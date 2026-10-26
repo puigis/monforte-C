@@ -1,7 +1,7 @@
 {
  "equip": "C.B. Monforte \"C\"",
  "competicio": "Lliga Catalana Tres Bandes · 1a Divisió · Grup A",
- "updated": "2026-10-25T08:49+00:00",
+ "updated": "2026-10-26T09:02+00:00",
  "players": [
   {
    "id": "castro-tellez-henry",
@@ -137,10 +137,10 @@
     },
     {
      "pid": "chuecos-enriquez-luis",
-     "car": 35,
-     "ent": 40,
+     "car": 28,
+     "ent": 50,
      "sm": 6,
-     "res": "G"
+     "res": "P"
     },
     {
      "pid": "segura-mondria-francesc-xavier",
