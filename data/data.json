@@ -1,7 +1,7 @@
 {
  "equip": "C.B. Monforte \"C\"",
  "competicio": "Lliga Catalana Tres Bandes · 1a Divisió · Grup A",
- "updated": "2026-11-18T17:19+00:00",
+ "updated": "2026-11-22T16:20+00:00",
  "players": [
   {
    "id": "castro-tellez-henry",
@@ -192,6 +192,43 @@
      "res": "P"
     }
    ]
+  },
+  {
+   "id": "j05",
+   "jornada": "5",
+   "date": "2026-11-21",
+   "rival": "C.B. PRAT \"A\"",
+   "venue": "L",
+   "results": [
+    {
+     "pid": "lozano-villegas-mauricio",
+     "car": 35,
+     "ent": 44,
+     "sm": 4,
+     "res": "G"
+    },
+    {
+     "pid": "hernandez-giraldo-fabian-alberto",
+     "car": 34,
+     "ent": 50,
+     "sm": 6,
+     "res": "G"
+    },
+    {
+     "pid": "chuecos-enriquez-luis",
+     "car": 30,
+     "ent": 50,
+     "sm": 4,
+     "res": "E"
+    },
+    {
+     "pid": "puig-latre-isaac",
+     "car": 24,
+     "ent": 50,
+     "sm": 3,
+     "res": "G"
+    }
+   ]
   }
  ],
  "calendar": [
@@ -228,7 +265,7 @@
    "date": "2026-11-21",
    "rival": "C.B. PRAT \"A\"",
    "venue": "L",
-   "played": false
+   "played": true
   },
   {
    "jornada": "6",
